@@ -1,0 +1,53 @@
+/* 按钮样式 */
+QPushButton {
+    background-color: #4a86e8;
+    color: white;
+    border: none;
+    padding: 4px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #3a76d8;
+}
+
+QPushButton:pressed {
+    background-color: #2a66c8;
+}
+
+QPushButton:disabled {
+    background-color: #cccccc;
+    color: #888888;
+}
+
+/* 启动按钮特殊样式 */
+#start_button {
+    font-size: 12pt;
+    padding: 12px 24px;
+}
+
+/* 重启和停止按钮样式 */
+.StartupPanel QPushButton[text="重启"] {
+    background-color: #ff9800;  /* 橙色 */
+}
+
+.StartupPanel QPushButton[text="重启"]:hover {
+    background-color: #f57c00;  /* 深橙色 */
+}
+
+.StartupPanel QPushButton[text="重启"]:pressed {
+    background-color: #e65100;  /* 更深的橙色 */
+}
+
+.StartupPanel QPushButton[text="停止"] {
+    background-color: #f44336;  /* 红色 */
+}
+
+.StartupPanel QPushButton[text="停止"]:hover {
+    background-color: #e53935;  /* 深红色 */
+}
+
+.StartupPanel QPushButton[text="停止"]:pressed {
+    background-color: #c62828;  /* 更深的红色 */
+}

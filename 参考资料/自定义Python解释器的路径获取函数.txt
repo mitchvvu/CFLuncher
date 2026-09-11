@@ -1,0 +1,13 @@
+给python解释器的位置增加两个新的方法
+
+
+1.get_python_exe_path
+2.get_comfyui_path
+
+get_python_exe_path中，有两种情况：
+a.如果没有选中python解释器的复选框，则返回".\python_embeded\python.exe"这个路径
+b.如果选中了python解释器的复选框，则返回获取到的python.exe的路径
+
+get_comfyui_path中，有两种情况：
+a.如果没有选中python解释器的复选框，则返回".\ComfyUI\"这个路径
+b.如果选中了python解释器的复选框，则用os的方法从获取到的get_python_exe_path中，对应的..\ComfyUI这个文件夹，比如说获取到的get_python_exe_path是D:\python_embeded\python.exe,那么返回的是D:\ComfyUI这个文件夹。

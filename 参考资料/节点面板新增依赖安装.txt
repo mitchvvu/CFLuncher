@@ -1,0 +1,45 @@
+在节点面板前面增加一些功能。
+界面上，需要增加一个复选框，名字是“使用国内镜像源”。后面是一个下拉选单，文字内容如下：
+
+1.清华大学-更新及时
+2.阿里云-稳定
+3.中国科技大学-更新及时
+4.华为云-稳定
+5.北京外国语大学-更新及时
+
+这个下拉选单对应的参数如下，选中的内容参数给到pip_mirror_source，注意前面的数字序号和点要去掉，只是为了方便和中文对应。参数如下：
+1.-i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+2.-i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+3.-i https://pypi.mirrors.ustc.edu.cn/simple/ --trusted-host pypi.mirrors.ustc.edu.cn
+4.-i https://repo.huaweicloud.com/repository/pypi/simple/ --trusted-host repo.huaweicloud.com
+5.-i https://mirrors.cloud.tencent.com/pypi/simple/ --trusted-host mirrors.cloud.tencent.com
+
+有了上面的参数，下面我们来修改安装依赖按钮的事件。右键保持不变，依然是打开依赖的文件。
+
+左键点击做如下的修改：
+
+首先我们需要打开一个qprocess，运行cmd，cmd要保持打开显示的状态。
+
+一、如果“使用国内镜像源”复选框没有选中，默认也是没有选中的，弹出的这个cmd需要使用设置面板中的代理设置来运行。这时，如果代理设置勾选，则使用代理。如果没有勾选，则直接使用网络，不使用代理。
+
+二、如果“使用国内镜像源”复选框选中，那么代理设置将会失效，直接不使用网络代理操作cmd。
+
+三、在cmd中命令，需要做如下的拼接;
+[python解释器路径]+[依赖安装命令]+[requirements.txt文件路径]+[国内镜像源]
+
+1.如果设置面板中的“使用自定义python解释器路径”没有选中，则在cmd中执行的是.\python_embeded\python.exe
+2.如果设置面板中的“使用自定义python解释器路径”没有选中，则在cmd中执行的是从设置面板中python路径设置中获取到的python.exe的路径
+
+3.[依赖安装命令]，是“ -m pip install -r”，预留下以后写别的命令的可能。
+
+4.[requirements.txt文件路径]，是从现在依赖按钮获取到的带引号的requirements.txt文件的路径，注意，拼接的时候，路径前面有空格。
+
+5.[国内镜像源]，如果“使用国内镜像源”复选框没有选中，则留空。如果选中，则根据前面gui界面中设置选中的参数附在后面，注意拼接的时候-i的前面有空格。
+
+下面是一个拼接好的命令的示例，点击安装依赖的时候执行。
+.\python_embeded\python.exe -m pip install -r [获取到的requirements.txt的路径，带引号] -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+
+这个示例表示的就是，因为使用了清华的国源，所以不使用代理。然后因为不勾选“使用自定义python解释器路径”，所以前面是.\python_embeded\python.exe
+
+
+

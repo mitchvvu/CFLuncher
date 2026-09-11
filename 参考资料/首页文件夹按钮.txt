@@ -1,0 +1,16 @@
+comfyui控制和日志之间，增加一行文件夹，里面有六个按钮，分别是根目录、自定义节点、模型文件、用户工作流、输入文件夹和输出文件夹
+
+1.首先根据python解释器的位置判断comfyui文件夹根目录的位置，变量是comfyui_root_folder
+如果没有在设置面板中自定义python解释器位置，那么comfyui_root_folder="./ComfyUI/"
+如果设置面板中自定义python解释器位置设置了python.exe的地址。那么应该是在这个python.exe的../ComfyUI/下。举个例子，如果是这个地址"D:\_AI\ComfyUI_Azen_V05\python_embeded\python.exe"，对应的就应该是comfyui_root_folder="D:/_AI/ComfyUI_Azen_V05/ComfyUI/"，注意要把所有的\都换成/，避免转义问题。
+那么根目录，对应的就是打开comfyui_root_folder对应的文件夹
+
+2.对于自定义节点，打开的就是f"{comfyui_root_folder}custom_nodes/"
+
+3.对于模型文件，打开的就是f"{comfyui_root_folder}models/"
+
+4.对于用户工作流，打开的就是f"{comfyui_root_folder}user/default/"
+
+5.对于输入文件夹，打开的就是f"{comfyui_root_folder}input/"，但是如果在设置面板中启用了自定义输入文件夹，则打开的就是自定义的输入文件夹的位置。
+
+6.对于输出文件夹，打开的就是f"{comfyui_root_folder}output/"，但是如果在设置面板中启用了自定义输出文件夹，则打开的就是自定义的输出文件夹的位置。
