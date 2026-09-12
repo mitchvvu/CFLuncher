@@ -9,6 +9,16 @@ Item {
 
     readonly property color accentTeal: "#00a7b3"
 
+    // 统一参数行的标签宽度，保证各参数左对齐
+    readonly property int paramLabelWidth: 120
+
+    // 参数行内的标签
+    component ParamLabel: Label {
+        width: root.paramLabelWidth
+        height: 32
+        verticalAlignment: Text.AlignVCenter
+    }
+
     Connections {
         target: backend
 
@@ -173,21 +183,21 @@ Item {
                 }
             }
 
-            CheckBox {
+            SwitchRow {
                 text: "只看主分支"
                 checked: nodeVersionDialog.nodeBackend
                          ? nodeVersionDialog.nodeBackend.mainBranchOnly : false
-                onToggled: {
+                function onToggled(checked) {
                     if (nodeVersionDialog.nodeBackend)
                         nodeVersionDialog.nodeBackend.mainBranchOnly = checked
                 }
             }
 
-            CheckBox {
+            SwitchRow {
                 text: "启用代理"
                 checked: nodeVersionDialog.nodeBackend
                          ? nodeVersionDialog.nodeBackend.proxyEnabled : false
-                onToggled: {
+                function onToggled(checked) {
                     if (nodeVersionDialog.nodeBackend)
                         nodeVersionDialog.nodeBackend.proxyEnabled = checked
                 }
@@ -348,17 +358,29 @@ Item {
         }
     }
 
+    // ==================== 页面顶部面包屑 ====================
+    PageHeader {
+        id: header
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        currentText: "节点管理"
+    }
+
     // ==================== 页面主体 ====================
     ScrollArea {
         id: scroll
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: header.bottom
+        anchors.bottom: parent.bottom
         padding: 16
 
         Column {
             width: scroll.width - scroll.padding * 2
             spacing: 20
 
-            // ==================== 依赖管理 ====================
+            // ==================== 镜像设置 ====================
             Card {
                 width: parent.width
                 autoHeight: true
@@ -369,27 +391,26 @@ Item {
 
                     Label {
                         type: Enums.label.type_body_strong
-                        text: "依赖管理"
+                        text: "镜像设置"
                     }
 
-                    CheckBox {
+                    SwitchRow {
                         text: "启用代理"
                         checked: backend.proxyEnabled
-                        onToggled: backend.proxyEnabled = checked
+                        function onToggled(checked) {
+                            backend.proxyEnabled = checked
+                        }
                     }
 
                     Row {
                         width: parent.width
                         spacing: 10
 
-                        Label {
-                            height: 32
-                            verticalAlignment: Text.AlignVCenter
-                            text: "镜像源:"
-                        }
+                        ParamLabel { text: "镜像源:" }
 
                         ComboBox {
-                            width: 400
+                            width: parent.width - root.paramLabelWidth
+                                   - mirrorSaveButton.width - 20
                             height: 32
                             model: backend.mirrorNames
                             currentIndex: backend.mirrorIndex
@@ -399,29 +420,35 @@ Item {
                         }
 
                         Button {
+                            id: mirrorSaveButton
                             height: 32
                             icon: "Save"
                             text: "保存设置"
                             onClicked: backend.saveMirrorSettings()
                         }
                     }
+                }
+            }
 
-                    Button {
-                        height: 32
-                        icon: "Document"
-                        text: "导出依赖列表"
-                        onClicked: exportDialog.open()
+            // ==================== 安装依赖 ====================
+            Card {
+                width: parent.width
+                autoHeight: true
+
+                Column {
+                    width: parent.width
+                    spacing: 12
+
+                    Label {
+                        type: Enums.label.type_body_strong
+                        text: "安装依赖"
                     }
 
                     Row {
                         width: parent.width
                         spacing: 10
 
-                        Label {
-                            height: 32
-                            verticalAlignment: Text.AlignVCenter
-                            text: "操作类型:"
-                        }
+                        ParamLabel { text: "操作类型:" }
 
                         ComboBox {
                             width: 160
@@ -465,7 +492,7 @@ Item {
                         }
                     }
 
-                    Row {
+                    Flow {
                         width: parent.width
                         spacing: 10
 
@@ -480,6 +507,13 @@ Item {
                             icon: "Document"
                             text: "打开本体依赖"
                             onClicked: backend.openComfyuiRequirements()
+                        }
+
+                        Button {
+                            height: 32
+                            icon: "Document"
+                            text: "导出依赖列表"
+                            onClicked: exportDialog.open()
                         }
                     }
                 }
@@ -499,10 +533,12 @@ Item {
                         text: "自定义节点安装"
                     }
 
-                    CheckBox {
+                    SwitchRow {
                         text: "启用代理"
                         checked: backend.gitProxyEnabled
-                        onToggled: backend.gitProxyEnabled = checked
+                        function onToggled(checked) {
+                            backend.gitProxyEnabled = checked
+                        }
                     }
 
                     Row {
@@ -701,12 +737,19 @@ Item {
                                     anchors.verticalCenter: parent.verticalCenter
                                     spacing: 8
 
-                                    CheckBox {
-                                        id: enableCheck
+                                    Label {
                                         anchors.verticalCenter: parent.verticalCenter
                                         text: isEnabled ? "已启用" : "已禁用"
+                                    }
+
+                                    ToggleSwitch {
+                                        id: enableCheck
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: ""
                                         checked: isEnabled
-                                        onToggled: backend.toggleNode(index, checked)
+                                        function onToggled(checked) {
+                                            backend.toggleNode(index, checked)
+                                        }
                                     }
 
                                     Button {

@@ -362,7 +362,7 @@ class NodesBackend(QObject):
 
     def _read_mirror_index(self):
         current_name = self.nodes_data_model.get_value(
-            "pip_mirror", "mirror_name", "清华大学-更新及时"
+            "pip_mirror", "mirror_name", "PIP官方源（国外）"
         )
         for i, (name, _) in enumerate(MIRROR_CONFIGS):
             if name == current_name:

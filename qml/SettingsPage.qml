@@ -7,6 +7,16 @@ Item {
     property var backend
     readonly property var vramModes: ["gpu_only", "high", "normal", "low", "no", "cpu"]
 
+    // 统一参数行的标签宽度，保证各参数左对齐
+    readonly property int paramLabelWidth: 120
+
+    // 参数行内的标签
+    component ParamLabel: Label {
+        width: root.paramLabelWidth
+        height: 32
+        verticalAlignment: Text.AlignVCenter
+    }
+
     Connections {
         target: backend
         function onNotifySuccess(title, content) {
@@ -40,9 +50,20 @@ Item {
         onAccepted: backend.browseInputDir(selectedFolder.toString())
     }
 
+    PageHeader {
+        id: header
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        currentText: "设置"
+    }
+
     ScrollArea {
         id: scroll
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: header.bottom
+        anchors.bottom: parent.bottom
         padding: 16
 
         Column {
@@ -63,20 +84,24 @@ Item {
                         text: "代理设置"
                     }
 
-                    CheckBox {
+                    SwitchRow {
                         text: "启用代理（仅对启动面板生效）"
                         checked: backend.proxyEnabled
-                        onToggled: backend.proxyEnabled = checked
+                        function onToggled(checked) {
+                            backend.proxyEnabled = checked
+                        }
                     }
 
-                    Item {
+                    Column {
                         width: parent.width
-                        height: 32
+                        spacing: 12
+                        visible: backend.proxyEnabled
 
                         Row {
-                            anchors.left: parent.left
-                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width
                             spacing: 10
+
+                            ParamLabel { text: "代理类型:" }
 
                             ComboBox {
                                 id: proxyTypeCombo
@@ -86,16 +111,17 @@ Item {
                                 currentIndex: backend.proxyType === "socks5" ? 1 : 0
                                 onActivated: backend.setProxyType(index === 0 ? "system" : "socks5")
                             }
+                        }
 
-                            Label {
-                                height: 32
-                                verticalAlignment: Text.AlignVCenter
-                                text: "代理网址:"
-                            }
+                        Row {
+                            width: parent.width
+                            spacing: 10
+
+                            ParamLabel { text: "代理网址:" }
 
                             LineEdit {
                                 id: proxyHostEdit
-                                width: 350
+                                width: parent.width - root.paramLabelWidth - 10
                                 height: 32
                                 text: backend.proxyHost
                                 onTextEdited: backend.proxyHost = text
@@ -103,15 +129,10 @@ Item {
                         }
 
                         Row {
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width
                             spacing: 10
 
-                            Label {
-                                height: 32
-                                verticalAlignment: Text.AlignVCenter
-                                text: "端口号:"
-                            }
+                            ParamLabel { text: "端口号:" }
 
                             LineEdit {
                                 id: proxyPortEdit
@@ -140,65 +161,54 @@ Item {
                         text: "局域网设置"
                     }
 
-                    Item {
+                    SwitchRow {
+                        text: "启用局域网访问"
+                        checked: backend.lanAccess
+                        function onToggled(checked) {
+                            backend.lanAccess = checked
+                        }
+                    }
+
+                    Column {
                         width: parent.width
-                        height: 32
+                        spacing: 12
+                        visible: backend.lanAccess
 
                         Row {
-                            anchors.left: parent.left
-                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width
                             spacing: 10
 
-                            Item {
-                                width: 160
-                                height: 32
-                                CheckBox {
-                                    anchors.left: parent.left
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: "启用局域网访问"
-                                    checked: backend.lanAccess
-                                    onToggled: backend.lanAccess = checked
-                                }
-                            }
-
-                            Label {
-                                height: 32
-                                verticalAlignment: Text.AlignVCenter
-                                text: "监听网址:"
-                            }
+                            ParamLabel { text: "监听网址:" }
 
                             LineEdit {
                                 id: listenEdit
-                                width: 350
+                                width: parent.width - root.paramLabelWidth - 10
                                 height: 32
                                 text: backend.listenAddress
                                 placeholderText: "例如: 0.0.0.0"
                                 onTextEdited: backend.listenAddress = text
                             }
                         }
+                    }
+
+                    SwitchRow {
+                        text: "启用自定义端口"
+                        checked: backend.customPortEnabled
+                        function onToggled(checked) {
+                            backend.customPortEnabled = checked
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: 12
+                        visible: backend.customPortEnabled
 
                         Row {
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width
                             spacing: 10
 
-                            Item {
-                                width: 160
-                                height: 32
-                                CheckBox {
-                                    anchors.right: parent.right
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: "启用自定义端口"
-                                    checked: backend.customPortEnabled
-                                    onToggled: backend.customPortEnabled = checked
-                                }
-                            }
-
-                            Label {
-                                height: 32
-                                verticalAlignment: Text.AlignVCenter
-                                text: "端口号:"
-                            }
+                            ParamLabel { text: "端口号:" }
 
                             LineEdit {
                                 id: listenPortEdit
@@ -228,22 +238,24 @@ Item {
                         text: "Python路径设置"
                     }
 
-                    CheckBox {
+                    SwitchRow {
                         text: "使用自定义Python解释器路径"
                         checked: backend.customPathEnabled
-                        onToggled: backend.customPathEnabled = checked
+                        function onToggled(checked) {
+                            backend.customPathEnabled = checked
+                        }
                     }
 
                     Row {
                         width: parent.width
                         spacing: 10
+                        visible: backend.customPathEnabled
 
                         LineEdit {
                             id: pathEdit
                             width: parent.width - browseButton.width - openFolderButton.width - 20
                             height: 32
                             readOnly: true
-                            enabled: backend.customPathEnabled
                             text: backend.comfyuiPath
                             placeholderText: "请选择python.exe文件路径"
                         }
@@ -253,7 +265,6 @@ Item {
                             height: 32
                             icon: "Folder"
                             text: "浏览..."
-                            enabled: backend.customPathEnabled
                             onClicked: pythonDialog.open()
                         }
 
@@ -262,7 +273,7 @@ Item {
                             height: 32
                             icon: "Folder"
                             text: "打开所在文件夹"
-                            enabled: backend.customPathEnabled && backend.comfyuiPath !== ""
+                            enabled: backend.comfyuiPath !== ""
                             onClicked: backend.openPythonFolder()
                         }
                     }
@@ -283,27 +294,24 @@ Item {
                         text: "高级启动参数设置"
                     }
 
+                    SwitchRow {
+                        text: "启用自定义输出目录"
+                        checked: backend.outputDirEnabled
+                        function onToggled(checked) {
+                            backend.outputDirEnabled = checked
+                        }
+                    }
+
                     Row {
                         width: parent.width
                         spacing: 10
-
-                        Item {
-                            width: 200
-                            height: 32
-                            CheckBox {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: "启用自定义输出目录"
-                                checked: backend.outputDirEnabled
-                                onToggled: backend.outputDirEnabled = checked
-                            }
-                        }
+                        visible: backend.outputDirEnabled
 
                         LineEdit {
                             id: outputDirEdit
                             width: parent.width - outputBrowseButton.width - 20
                             height: 32
                             readOnly: true
-                            enabled: backend.outputDirEnabled
                             text: backend.outputDir
                             placeholderText: "请选择输出目录"
                         }
@@ -313,32 +321,28 @@ Item {
                             height: 32
                             icon: "Folder"
                             text: "浏览..."
-                            enabled: backend.outputDirEnabled
                             onClicked: outputDirDialog.open()
+                        }
+                    }
+
+                    SwitchRow {
+                        text: "启用自定义输入目录"
+                        checked: backend.inputDirEnabled
+                        function onToggled(checked) {
+                            backend.inputDirEnabled = checked
                         }
                     }
 
                     Row {
                         width: parent.width
                         spacing: 10
-
-                        Item {
-                            width: 200
-                            height: 32
-                            CheckBox {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: "启用自定义输入目录"
-                                checked: backend.inputDirEnabled
-                                onToggled: backend.inputDirEnabled = checked
-                            }
-                        }
+                        visible: backend.inputDirEnabled
 
                         LineEdit {
                             id: inputDirEdit
                             width: parent.width - inputBrowseButton.width - 20
                             height: 32
                             readOnly: true
-                            enabled: backend.inputDirEnabled
                             text: backend.inputDir
                             placeholderText: "请选择输入目录"
                         }
@@ -348,31 +352,29 @@ Item {
                             height: 32
                             icon: "Folder"
                             text: "浏览..."
-                            enabled: backend.inputDirEnabled
                             onClicked: inputDirDialog.open()
+                        }
+                    }
+
+                    SwitchRow {
+                        text: "启用显存模式设置"
+                        checked: backend.vramEnabled
+                        function onToggled(checked) {
+                            backend.vramEnabled = checked
                         }
                     }
 
                     Row {
                         width: parent.width
                         spacing: 10
+                        visible: backend.vramEnabled
 
-                        Item {
-                            width: 200
-                            height: 32
-                            CheckBox {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: "启用显存模式设置"
-                                checked: backend.vramEnabled
-                                onToggled: backend.vramEnabled = checked
-                            }
-                        }
+                        ParamLabel { text: "显存模式:" }
 
                         ComboBox {
                             id: vramCombo
-                            width: parent.width - 200 - 10
+                            width: parent.width - root.paramLabelWidth - 10
                             height: 32
-                            enabled: backend.vramEnabled
                             model: [
                                 "仅GPU:  所有模型保持在GPU上 (--gpu-only)",
                                 "高显存:  模型保持加载 (--highvram)",
@@ -386,32 +388,37 @@ Item {
                         }
                     }
 
+                    SwitchRow {
+                        text: "启用预留显存"
+                        checked: backend.reserveVramEnabled
+                        function onToggled(checked) {
+                            backend.reserveVramEnabled = checked
+                        }
+                    }
+
                     Row {
                         width: parent.width
                         spacing: 10
+                        visible: backend.reserveVramEnabled
 
-                        CheckBox {
-                            id: reserveVramCheck
-                            text: "预留显存 (GB):"
-                            checked: backend.reserveVramEnabled
-                            onToggled: backend.reserveVramEnabled = checked
-                        }
+                        ParamLabel { text: "预留显存 (GB):" }
 
                         LineEdit {
                             id: reserveVramEdit
                             width: 80
                             height: 32
-                            enabled: backend.reserveVramEnabled
                             text: backend.reserveVram
                             onTextEdited: backend.reserveVram = text
                             validator: DoubleValidator { bottom: 0.0; top: 100.0; decimals: 2 }
                         }
                     }
 
-                    CheckBox {
+                    SwitchRow {
                         text: "禁用元数据:  图片不保存工作流"
                         checked: backend.disableMetadata
-                        onToggled: backend.disableMetadata = checked
+                        function onToggled(checked) {
+                            backend.disableMetadata = checked
+                        }
                     }
                 }
             }
@@ -430,25 +437,24 @@ Item {
                         text: "Manager重启命令接管"
                     }
 
-                    CheckBox {
+                    SwitchRow {
                         text: "启用 (避免Manager重启失败导致端口占用)"
                         checked: backend.restartCommandEnabled
-                        onToggled: backend.restartCommandEnabled = checked
+                        function onToggled(checked) {
+                            backend.restartCommandEnabled = checked
+                        }
                     }
 
                     Row {
                         width: parent.width
                         spacing: 10
+                        visible: backend.restartCommandEnabled
 
-                        Label {
-                            height: 32
-                            verticalAlignment: Text.AlignVCenter
-                            text: "重启命令关键词:"
-                        }
+                        ParamLabel { text: "重启命令关键词:" }
 
                         LineEdit {
                             id: restartKeywordEdit
-                            width: parent.width - 130
+                            width: parent.width - root.paramLabelWidth - 10
                             height: 32
                             text: backend.restartCommandKeyword
                             placeholderText: "输入用于识别重启命令的关键词"

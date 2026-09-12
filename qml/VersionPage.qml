@@ -43,9 +43,20 @@ Item {
         onAccepted: backend.switchVersion(backend.selectedIndex)
     }
 
+    PageHeader {
+        id: header
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        currentText: "版本管理"
+    }
+
     ScrollArea {
         id: scroll
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: header.bottom
+        anchors.bottom: parent.bottom
         padding: 16
 
         Column {
@@ -66,10 +77,12 @@ Item {
                         text: "ComfyUI 版本管理"
                     }
 
-                    CheckBox {
+                    SwitchRow {
                         text: "启用代理"
                         checked: backend.proxyEnabled
-                        onToggled: backend.proxyEnabled = checked
+                        function onToggled(checked) {
+                            backend.proxyEnabled = checked
+                        }
                     }
 
                     Row {
