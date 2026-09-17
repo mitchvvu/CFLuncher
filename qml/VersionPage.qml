@@ -60,11 +60,14 @@ Item {
         padding: 16
 
         Column {
+            id: contentColumn
             width: scroll.width - scroll.padding * 2
+            height: scroll.height - scroll.padding * 2
             spacing: 20
 
             // ==================== 版本管理设置 ====================
             Card {
+                id: settingsCard
                 width: parent.width
                 autoHeight: true
 
@@ -80,7 +83,7 @@ Item {
                     SwitchRow {
                         text: "启用代理"
                         checked: backend.proxyEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.proxyEnabled = checked
                         }
                     }
@@ -100,30 +103,19 @@ Item {
                             height: 32
                             model: backend.sourceNames
                             currentIndex: backend.sourceIndex
-                            function onActivated(index) {
+                            onActivated: (index) => {
                                 backend.setSourceIndex(index)
                             }
                         }
-                    }
 
-                    Row {
-                        width: parent.width
-                        spacing: 10
-
-                        Label {
+                        Button {
+                            id: infoButton
                             height: 32
-                            verticalAlignment: Text.AlignVCenter
-                            text: "当前源:"
-                        }
-
-                        Label {
-                            width: parent.width - refreshButton.width - 100
-                            height: 32
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                            type: Enums.label.type_body_strong
-                            customTextColor: root.accentTeal
-                            text: backend.sourceUrl
+                            style: Enums.button.style_transparent
+                            icon: "Info"
+                            text: ""
+                            toolTipText: "当前源: " + backend.sourceUrl
+                                         + "\nComfyUI 状态: " + backend.statusText
                         }
 
                         Button {
@@ -135,57 +127,67 @@ Item {
                             onClicked: backend.refreshVersions()
                         }
                     }
-
-                    Row {
-                        width: parent.width
-                        spacing: 10
-
-                        Label {
-                            height: 32
-                            verticalAlignment: Text.AlignVCenter
-                            text: "ComfyUI状态:"
-                        }
-
-                        Label {
-                            height: 32
-                            verticalAlignment: Text.AlignVCenter
-                            type: Enums.label.type_body_strong
-                            customTextColor: root.accentTeal
-                            text: backend.statusText
-                        }
-                    }
                 }
             }
 
             // ==================== 可用版本 ====================
             Card {
+                id: versionCard
                 width: parent.width
-                autoHeight: true
+                // 高度 = 撑满剩余空间（视口高 - 上方设置卡 - 间距）
+                preferredHeight: Math.max(280,
+                                          contentColumn.height - settingsCard.height
+                                          - contentColumn.spacing)
 
                 Column {
+                    id: versionColumn
                     width: parent.width
+                    height: parent.height
                     spacing: 12
 
                     Label {
+                        id: versionsTitle
                         type: Enums.label.type_body_strong
                         text: "可用版本"
                     }
 
-                    SegmentedControl {
-                        id: tabControl
-                        items: [
-                            { key: "stable", text: "稳定版" },
-                            { key: "dev", text: "开发版" }
-                        ]
-                        currentIndex: backend.activeTab === "dev" ? 1 : 0
-                        function onItemClicked(index, byUser) {
-                            backend.setTab(tabControl.items[index].key)
+                    Item {
+                        id: versionToolbar
+                        width: parent.width
+                        height: 40
+
+                        SegmentedControl {
+                            id: tabControl
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            items: [
+                                { key: "stable", text: "稳定版" },
+                                { key: "dev", text: "开发版" }
+                            ]
+                            currentIndex: backend.activeTab === "dev" ? 1 : 0
+                            onItemClicked: (index, byUser) => {
+                                backend.setTab(tabControl.items[index].key)
+                            }
+                        }
+
+                        Button {
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: 40
+                            style: Enums.button.style_primary
+                            text: backend.busy ? "处理中..." : "切换版本"
+                            enabled: !backend.busy && backend.selectedIndex >= 0
+                            onClicked: switchDialog.open()
                         }
                     }
 
                     Rectangle {
                         width: parent.width
-                        height: 605
+                        // 撑满“可用版本”卡片剩余高度
+                        height: Math.max(160,
+                                         versionColumn.height - versionsTitle.height
+                                         - versionToolbar.height
+                                         - versionColumn.spacing * 2)
                         radius: 5
                         color: Enums.surfaceColor
                         border.color: Enums.borderColor
@@ -293,15 +295,6 @@ Item {
                             type: Enums.label.type_caption
                             text: backend.busy ? "正在获取版本信息..." : "暂无版本信息，请点击刷新"
                         }
-                    }
-
-                    Button {
-                        width: parent.width
-                        height: 40
-                        style: Enums.button.style_primary
-                        text: backend.busy ? "处理中..." : "切换版本"
-                        enabled: !backend.busy && backend.selectedIndex >= 0
-                        onClicked: switchDialog.open()
                     }
                 }
             }

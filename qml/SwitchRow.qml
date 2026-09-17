@@ -27,7 +27,7 @@ Item {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         text: ""
-        function onToggled(checked) {
+        onToggled: (checked) => {
             root.toggled(checked)
         }
     }

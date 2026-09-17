@@ -87,7 +87,7 @@ Item {
                     SwitchRow {
                         text: "启用代理（仅对启动面板生效）"
                         checked: backend.proxyEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.proxyEnabled = checked
                         }
                     }
@@ -164,7 +164,7 @@ Item {
                     SwitchRow {
                         text: "启用局域网访问"
                         checked: backend.lanAccess
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.lanAccess = checked
                         }
                     }
@@ -194,7 +194,7 @@ Item {
                     SwitchRow {
                         text: "启用自定义端口"
                         checked: backend.customPortEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.customPortEnabled = checked
                         }
                     }
@@ -241,7 +241,7 @@ Item {
                     SwitchRow {
                         text: "使用自定义Python解释器路径"
                         checked: backend.customPathEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.customPathEnabled = checked
                         }
                     }
@@ -297,7 +297,7 @@ Item {
                     SwitchRow {
                         text: "启用自定义输出目录"
                         checked: backend.outputDirEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.outputDirEnabled = checked
                         }
                     }
@@ -328,7 +328,7 @@ Item {
                     SwitchRow {
                         text: "启用自定义输入目录"
                         checked: backend.inputDirEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.inputDirEnabled = checked
                         }
                     }
@@ -359,7 +359,7 @@ Item {
                     SwitchRow {
                         text: "启用显存模式设置"
                         checked: backend.vramEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.vramEnabled = checked
                         }
                     }
@@ -391,7 +391,7 @@ Item {
                     SwitchRow {
                         text: "启用预留显存"
                         checked: backend.reserveVramEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.reserveVramEnabled = checked
                         }
                     }
@@ -416,7 +416,7 @@ Item {
                     SwitchRow {
                         text: "禁用元数据:  图片不保存工作流"
                         checked: backend.disableMetadata
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.disableMetadata = checked
                         }
                     }
@@ -440,7 +440,7 @@ Item {
                     SwitchRow {
                         text: "启用 (避免Manager重启失败导致端口占用)"
                         checked: backend.restartCommandEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.restartCommandEnabled = checked
                         }
                     }

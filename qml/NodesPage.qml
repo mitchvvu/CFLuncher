@@ -187,7 +187,7 @@ Item {
                 text: "只看主分支"
                 checked: nodeVersionDialog.nodeBackend
                          ? nodeVersionDialog.nodeBackend.mainBranchOnly : false
-                function onToggled(checked) {
+                onToggled: (checked) => {
                     if (nodeVersionDialog.nodeBackend)
                         nodeVersionDialog.nodeBackend.mainBranchOnly = checked
                 }
@@ -197,7 +197,7 @@ Item {
                 text: "启用代理"
                 checked: nodeVersionDialog.nodeBackend
                          ? nodeVersionDialog.nodeBackend.proxyEnabled : false
-                function onToggled(checked) {
+                onToggled: (checked) => {
                     if (nodeVersionDialog.nodeBackend)
                         nodeVersionDialog.nodeBackend.proxyEnabled = checked
                 }
@@ -397,7 +397,7 @@ Item {
                     SwitchRow {
                         text: "启用代理"
                         checked: backend.proxyEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.proxyEnabled = checked
                         }
                     }
@@ -414,7 +414,7 @@ Item {
                             height: 32
                             model: backend.mirrorNames
                             currentIndex: backend.mirrorIndex
-                            function onActivated(index) {
+                            onActivated: (index) => {
                                 backend.mirrorIndex = index
                             }
                         }
@@ -455,7 +455,7 @@ Item {
                             height: 32
                             model: backend.depTypeNames
                             currentIndex: backend.depTypeIndex
-                            function onActivated(index) {
+                            onActivated: (index) => {
                                 backend.depTypeIndex = index
                             }
                         }
@@ -536,7 +536,7 @@ Item {
                     SwitchRow {
                         text: "启用代理"
                         checked: backend.gitProxyEnabled
-                        function onToggled(checked) {
+                        onToggled: (checked) => {
                             backend.gitProxyEnabled = checked
                         }
                     }
@@ -747,7 +747,7 @@ Item {
                                         anchors.verticalCenter: parent.verticalCenter
                                         text: ""
                                         checked: isEnabled
-                                        function onToggled(checked) {
+                                        onToggled: (checked) => {
                                             backend.toggleNode(index, checked)
                                         }
                                     }

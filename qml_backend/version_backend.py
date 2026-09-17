@@ -16,10 +16,10 @@ from PySide6.QtCore import (
     Slot,
 )
 
-DEFAULT_SOURCE_URL = "https://github.com/comfyanonymous/ComfyUI"
+DEFAULT_SOURCE_URL = "https://github.com/Comfy-Org/ComfyUI.git"
 
 SOURCE_CONFIGS = [
-    ("GitHub官方(国外)", "https://github.com/comfyanonymous/ComfyUI"),
+    ("GitHub官方(国外)", "https://github.com/Comfy-Org/ComfyUI.git"),
 ]
 
 
