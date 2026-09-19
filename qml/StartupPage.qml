@@ -182,6 +182,24 @@ Item {
                     text: "运行日志"
                 }
 
+                Row {
+                    width: parent.width
+                    spacing: 10
+
+                    Button {
+                        text: "清空日志"
+                        onClicked: backend.clearLog()
+                    }
+                    Button {
+                        text: "复制日志"
+                        onClicked: backend.copyLog()
+                    }
+                    Button {
+                        text: "保存文件"
+                        onClicked: saveLogDialog.open()
+                    }
+                }
+
                 Rectangle {
                     width: parent.width
                     height: 320
@@ -220,24 +238,6 @@ Item {
                         visible: logView.count <= 1
                         type: Enums.label.type_caption
                         text: "等待启动..."
-                    }
-                }
-
-                Row {
-                    width: parent.width
-                    spacing: 10
-
-                    Button {
-                        text: "清空日志"
-                        onClicked: backend.clearLog()
-                    }
-                    Button {
-                        text: "复制日志"
-                        onClicked: backend.copyLog()
-                    }
-                    Button {
-                        text: "保存到文件"
-                        onClicked: saveLogDialog.open()
                     }
                 }
             }

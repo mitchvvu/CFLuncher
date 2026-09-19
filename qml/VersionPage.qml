@@ -203,6 +203,7 @@ Item {
                             spacing: 1
 
                             delegate: Rectangle {
+                                id: versionRow
                                 required property int index
                                 required property string commitId
                                 required property string date
@@ -274,7 +275,7 @@ Item {
                                         height: 55
                                         verticalAlignment: Text.AlignVCenter
                                         elide: Text.ElideRight
-                                        text: text
+                                        text: versionRow.text
                                     }
 
                                     Label {

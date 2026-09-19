@@ -105,6 +105,9 @@ class MainWindow(Window):
         self.nodes_page = AsyncQmlPage(
             _qml("NodesPage.qml"), backend=self.nodes_backend
         )
+        self.dependency_page = AsyncQmlPage(
+            _qml("DependencyPage.qml"), backend=self.nodes_backend
+        )
         self.settings_page = AsyncQmlPage(
             _qml("SettingsPage.qml"), backend=self.settings_backend
         )
@@ -112,6 +115,7 @@ class MainWindow(Window):
 
         self.addPage(self.startup_page, "Play", "启动", position="top")
         self.addPage(self.version_page, "ArrowSync", "版本管理", position="top")
+        self.addPage(self.dependency_page, "Box", "依赖管理", position="top")
         self.addPage(self.nodes_page, "Tag", "节点管理", position="top")
         self.addPage(self.settings_page, "Settings", "设置", position="top")
         self.addPage(self.about_page, "Info", "关于", position="bottom")
