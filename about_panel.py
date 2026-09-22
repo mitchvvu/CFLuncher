@@ -32,7 +32,7 @@ class AboutPanel(QWidget):
         main_layout.addWidget(title_label)
         
         # 版本信息
-        version_label = BodyLabel("版本 0.6.7")
+        version_label = BodyLabel("版本 0.7.0")
         version_label.setAlignment(Qt.AlignCenter)
         version_font = QFont()
         version_font.setPointSize(12)

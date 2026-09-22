@@ -120,8 +120,8 @@ class NodesDataModel:
         self.default_settings = {
             'pip_mirror': {
                 # 'enabled': True, # 这个参数不需要了。
-                'mirror_name': '清华大学-更新及时',
-                'mirror_source': '-i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn',
+                'mirror_name': 'PIP官方源（国外）',
+                'mirror_source': '',
                 'proxy_enabled': False
             },
             'git': {

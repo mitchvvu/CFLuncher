@@ -91,7 +91,7 @@ class VersionPanel(QWidget):
         self.source_combo = ComboBox()
         # 源配置列表
         source_configs = [
-            ("GitHub官方(国外)", "https://github.com/comfyanonymous/ComfyUI")
+            ("GitHub官方(国外)", "https://github.com/Comfy-Org/ComfyUI.git")
         ]
         
         # 添加项目并设置数据
@@ -101,7 +101,7 @@ class VersionPanel(QWidget):
             self.source_combo.setItemData(index, url)
         
         # 设置当前选中的源
-        current_source_url = self.data_model.get_value('version_manager', 'git_source_url', 'https://github.com/comfyanonymous/ComfyUI')
+        current_source_url = self.data_model.get_value('version_manager', 'git_source_url', 'https://github.com/Comfy-Org/ComfyUI.git')
         for i in range(self.source_combo.count()):
             if self.source_combo.itemData(i) == current_source_url:
                 self.source_combo.setCurrentIndex(i)
@@ -397,7 +397,7 @@ class VersionPanel(QWidget):
         """更新源显示"""
         source_url = self.source_combo.currentData()
         if source_url is None:
-            source_url = "https://github.com/comfyanonymous/ComfyUI"
+            source_url = "https://github.com/Comfy-Org/ComfyUI.git"
         self.source_label.setText(source_url)
 
     def save_source_settings(self):
@@ -424,7 +424,7 @@ class VersionPanel(QWidget):
                 self.proxy_checkbox.setChecked(proxy_enabled)
                 
                 # 加载源选择设置，默认选择GitHub官方
-                source_url = config.get('settings', 'source_url', fallback='https://github.com/comfyanonymous/ComfyUI')
+                source_url = config.get('settings', 'source_url', fallback='https://github.com/Comfy-Org/ComfyUI.git')
                 for i in range(self.source_combo.count()):
                     if self.source_combo.itemData(i) == source_url:
                         self.source_combo.setCurrentIndex(i)
@@ -436,7 +436,7 @@ class VersionPanel(QWidget):
                 self.proxy_checkbox.setChecked(False)  # 默认关闭代理
                 # 默认选择GitHub官方
                 for i in range(self.source_combo.count()):
-                    if self.source_combo.itemData(i) == 'https://github.com/comfyanonymous/ComfyUI':
+                    if self.source_combo.itemData(i) == 'https://github.com/Comfy-Org/ComfyUI.git':
                         self.source_combo.setCurrentIndex(i)
                         break
                 print("使用默认版本管理面板设置")
@@ -609,7 +609,7 @@ class VersionPanel(QWidget):
             # 确保remote_url不为None
             if remote_url is None:
                 # 如果为None，使用默认值
-                remote_url = "https://github.com/comfyanonymous/ComfyUI"
+                remote_url = "https://github.com/Comfy-Org/ComfyUI.git"
                 print(f"警告: 源URL为空，使用默认源")
             
             # 设置或更新远程仓库URL
@@ -622,7 +622,7 @@ class VersionPanel(QWidget):
                 if remote.url != remote_url:
                     # 确保remote_url不为None
                     if remote_url is None:
-                        remote_url = "https://github.com/comfyanonymous/ComfyUI"
+                        remote_url = "https://github.com/Comfy-Org/ComfyUI.git"
                         print(f"警告: 更新远程仓库时URL为空，使用默认源")
                     
                     try:
@@ -636,7 +636,7 @@ class VersionPanel(QWidget):
                 try:
                     # 确保remote_url不为None
                     if remote_url is None:
-                        remote_url = "https://github.com/comfyanonymous/ComfyUI"
+                        remote_url = "https://github.com/Comfy-Org/ComfyUI.git"
                         print(f"警告: 创建远程仓库时URL为空，使用默认源")
                     
                     self.repo.create_remote(remote_name, remote_url)

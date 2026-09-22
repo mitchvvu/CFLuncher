@@ -1,4 +1,4 @@
 @echo
 call conda activate py310
-python main.py
+python main_qml.py
 pause

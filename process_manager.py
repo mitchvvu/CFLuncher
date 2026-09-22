@@ -270,115 +270,72 @@ class ComfyUIProcessManager(QObject):
             # 如果进程不在运行，直接启动
             return self.start_comfyui()
     
+    def get_python_exe_path(self):
+        """获取Python解释器路径（未启用自定义路径时返回默认路径）"""
+        if not self.data_model.get_bool('paths', 'custom_comfyui_path_enabled'):
+            return ".\\python_embeded\\python.exe"
+        return self.data_model.get_value('paths', 'comfyui_path') or ""
+
+    def get_comfyui_path(self):
+        """获取ComfyUI路径（未启用自定义路径时返回默认路径）"""
+        if not self.data_model.get_bool('paths', 'custom_comfyui_path_enabled'):
+            return ".\\ComfyUI\\"
+        python_path = self.get_python_exe_path()
+        if python_path and os.path.exists(python_path):
+            parent_dir = os.path.dirname(os.path.dirname(python_path))
+            return os.path.join(parent_dir, "ComfyUI")
+        return ".\\ComfyUI\\"
+
     def build_command(self):
         """构建启动命令"""
         # 基本命令
         command = ["cmd.exe", "/c"]
-        
-        # 尝试从settings_panel获取ComfyUI路径
-        # 获取主窗口中的settings_panel实例
-        main_window = self.parent()
-        while main_window and not hasattr(main_window, 'settings_panel'):
-            main_window = main_window.parent()
-        
-        # 如果能获取到settings_panel实例，使用其get_comfyui_path方法获取ComfyUI路径
-        if main_window and hasattr(main_window, 'settings_panel'):
-            comfyui_path = main_window.settings_panel.get_comfyui_path()
-            # 获取Python路径
-            custom_path_enabled = self.data_model.get_bool('paths', 'custom_comfyui_path_enabled')
-            
-            if custom_path_enabled:
-                python_exe_path = self.data_model.get_value('paths', 'comfyui_path')
-                if python_exe_path and os.path.exists(python_exe_path):
-                    # 使用自定义的python.exe路径
-                    python_exe_dir = os.path.dirname(python_exe_path)
-                    # 使用settings_panel获取的ComfyUI路径
-                    main_py = os.path.join(comfyui_path, "main.py")
-                    
-                    # 添加cd命令切换到python_embeded所在目录
-                    # 如果路径包含空格，需要用双引号括起来
-                    if " " in python_exe_dir:
-                        command.extend(["cd", f"\"{python_exe_dir}\"", "&"])
-                    else:
-                        command.extend(["cd", python_exe_dir, "&"])
-                    
-                    # 使用python.exe的完整路径
-                    # 如果路径包含空格，需要用双引号括起来
-                    if " " in python_exe_path:
-                        command.append(f"\"{python_exe_path}\"")
-                    else:
-                        command.append(python_exe_path)
-                        
-                    command.append("-s")
-                    
-                    # 如果路径包含空格，需要用双引号括起来
-                    if " " in main_py:
-                        command.append(f"\"{main_py}\"")
-                    else:
-                        command.append(main_py)
-                        
-                    command.append("--windows-standalone-build")
+
+        comfyui_path = self.get_comfyui_path()
+        custom_path_enabled = self.data_model.get_bool('paths', 'custom_comfyui_path_enabled')
+
+        if custom_path_enabled:
+            python_exe_path = self.data_model.get_value('paths', 'comfyui_path')
+            if python_exe_path and os.path.exists(python_exe_path):
+                # 使用自定义的python.exe路径
+                python_exe_dir = os.path.dirname(python_exe_path)
+                main_py = os.path.join(comfyui_path, "main.py")
+
+                # 添加cd命令切换到python_embeded所在目录
+                # 如果路径包含空格，需要用双引号括起来
+                if " " in python_exe_dir:
+                    command.extend(["cd", f"\"{python_exe_dir}\"", "&"])
                 else:
-                    # 如果自定义路径为空或不存在，使用默认路径
-                    command.append(".\python_embeded\python.exe")
-                    command.append("-s")
-                    command.append(os.path.join(comfyui_path, "main.py"))
-                    command.append("--windows-standalone-build")
+                    command.extend(["cd", python_exe_dir, "&"])
+
+                # 使用python.exe的完整路径
+                # 如果路径包含空格，需要用双引号括起来
+                if " " in python_exe_path:
+                    command.append(f"\"{python_exe_path}\"")
+                else:
+                    command.append(python_exe_path)
+
+                command.append("-s")
+
+                # 如果路径包含空格，需要用双引号括起来
+                if " " in main_py:
+                    command.append(f"\"{main_py}\"")
+                else:
+                    command.append(main_py)
+
+                command.append("--windows-standalone-build")
             else:
-                # 使用默认路径
+                # 如果自定义路径为空或不存在，使用默认路径
                 command.append(".\python_embeded\python.exe")
                 command.append("-s")
                 command.append(os.path.join(comfyui_path, "main.py"))
                 command.append("--windows-standalone-build")
         else:
-            # 如果无法获取settings_panel实例，使用原有逻辑
-            # 获取Python路径
-            custom_path_enabled = self.data_model.get_bool('paths', 'custom_comfyui_path_enabled')
-            
-            if custom_path_enabled:
-                python_exe_path = self.data_model.get_value('paths', 'comfyui_path')
-                if python_exe_path and os.path.exists(python_exe_path):
-                    # 使用自定义的python.exe路径
-                    python_exe_dir = os.path.dirname(python_exe_path)
-                    # 假设ComfyUI目录在python_embeded的上一级目录
-                    comfyui_dir = os.path.dirname(python_exe_dir)
-                    main_py = os.path.join(comfyui_dir, "ComfyUI", "main.py")
-                    
-                    # 添加cd命令切换到python_embeded所在目录
-                    # 如果路径包含空格，需要用双引号括起来
-                    if " " in python_exe_dir:
-                        command.extend(["cd", f"\"{python_exe_dir}\"", "&"])
-                    else:
-                        command.extend(["cd", python_exe_dir, "&"])
-                    
-                    # 使用python.exe的完整路径
-                    # 如果路径包含空格，需要用双引号括起来
-                    if " " in python_exe_path:
-                        command.append(f"\"{python_exe_path}\"")
-                    else:
-                        command.append(python_exe_path)
-                        
-                    command.append("-s")
-                    
-                    # 如果路径包含空格，需要用双引号括起来
-                    if " " in main_py:
-                        command.append(f"\"{main_py}\"")
-                    else:
-                        command.append(main_py)
-                        
-                    command.append("--windows-standalone-build")
-                else:
-                    # 如果自定义路径为空或不存在，使用默认路径
-                    command.append(".\python_embeded\python.exe")
-                    command.append("-s")
-                    command.append("ComfyUI\main.py")
-                    command.append("--windows-standalone-build")
-            else:
-                # 使用默认路径
-                command.append(".\python_embeded\python.exe")
-                command.append("-s")
-                command.append("ComfyUI\main.py")
-                command.append("--windows-standalone-build")
+            # 使用默认路径
+            command.append(".\python_embeded\python.exe")
+            command.append("-s")
+            command.append(os.path.join(comfyui_path, "main.py"))
+            command.append("--windows-standalone-build")
         
         # 添加局域网访问设置
         if self.data_model.get_bool('network', 'lan_access'):
