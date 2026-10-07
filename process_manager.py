@@ -2,6 +2,8 @@ import os
 from PySide6.QtCore import QObject, Signal, QProcess
 import locale
 
+from data_model import get_application_dir
+
 class ComfyUIProcessManager(QObject):
     # 定义信号
     log_signal = Signal(str)
@@ -273,18 +275,19 @@ class ComfyUIProcessManager(QObject):
     def get_python_exe_path(self):
         """获取Python解释器路径（未启用自定义路径时返回默认路径）"""
         if not self.data_model.get_bool('paths', 'custom_comfyui_path_enabled'):
-            return ".\\python_embeded\\python.exe"
+            return os.path.join(get_application_dir(), "python_embeded", "python.exe")
         return self.data_model.get_value('paths', 'comfyui_path') or ""
 
     def get_comfyui_path(self):
         """获取ComfyUI路径（未启用自定义路径时返回默认路径）"""
+        default_path = os.path.join(get_application_dir(), "ComfyUI")
         if not self.data_model.get_bool('paths', 'custom_comfyui_path_enabled'):
-            return ".\\ComfyUI\\"
+            return default_path
         python_path = self.get_python_exe_path()
         if python_path and os.path.exists(python_path):
             parent_dir = os.path.dirname(os.path.dirname(python_path))
             return os.path.join(parent_dir, "ComfyUI")
-        return ".\\ComfyUI\\"
+        return default_path
 
     def build_command(self):
         """构建启动命令"""
@@ -326,13 +329,17 @@ class ComfyUIProcessManager(QObject):
                 command.append("--windows-standalone-build")
             else:
                 # 如果自定义路径为空或不存在，使用默认路径
-                command.append(".\python_embeded\python.exe")
+                command.append(
+                    os.path.join(get_application_dir(), "python_embeded", "python.exe")
+                )
                 command.append("-s")
                 command.append(os.path.join(comfyui_path, "main.py"))
                 command.append("--windows-standalone-build")
         else:
             # 使用默认路径
-            command.append(".\python_embeded\python.exe")
+            command.append(
+                os.path.join(get_application_dir(), "python_embeded", "python.exe")
+            )
             command.append("-s")
             command.append(os.path.join(comfyui_path, "main.py"))
             command.append("--windows-standalone-build")

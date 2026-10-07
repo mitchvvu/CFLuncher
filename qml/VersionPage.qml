@@ -12,13 +12,13 @@ Item {
         target: backend
 
         function onNotifySuccess(title, content) {
-            NotificationManager.infoBar.success(root, title, content)
+            NotificationManager.infoBar.success(root, title, content, undefined, NotificationManager.posTop)
         }
         function onNotifyError(title, content) {
-            NotificationManager.infoBar.error(root, title, content)
+            NotificationManager.infoBar.error(root, title, content, undefined, NotificationManager.posTop)
         }
         function onNotifyInfo(title, content) {
-            NotificationManager.infoBar.info(root, title, content)
+            NotificationManager.infoBar.info(root, title, content, undefined, NotificationManager.posTop)
         }
         function onListReset() {
             versionList.currentIndex = -1

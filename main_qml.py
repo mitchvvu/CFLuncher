@@ -15,7 +15,7 @@ os.chdir(_application_dir())
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont
 from prismqml import App, AsyncQmlPage, Window, WindowType, Theme, setTheme
 
@@ -42,20 +42,32 @@ def _resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+def _close_bootloader_splash():
+    """关闭 PyInstaller bootloader 启动图（仅打包运行时存在 pyi_splash 模块）。"""
+    try:
+        import pyi_splash  # type: ignore
+    except Exception:
+        return
+    try:
+        pyi_splash.close()
+    except Exception:
+        pass
+
+
 def ensure_config_files():
-    """确保配置文件正确移动到 starter 目录。"""
-    starter_dir = os.path.join(_application_dir(), "starter")
-    os.makedirs(starter_dir, exist_ok=True)
+    """确保配置文件正确移动到 configs 目录。"""
+    configs_dir = os.path.join(_application_dir(), "configs")
+    os.makedirs(configs_dir, exist_ok=True)
 
     launcher_ini = os.path.join(_application_dir(), "launcher.ini")
-    starter_launcher_ini = os.path.join(starter_dir, "launcher.ini")
+    configs_launcher_ini = os.path.join(configs_dir, "launcher.ini")
 
-    if os.path.exists(launcher_ini) and not os.path.exists(starter_launcher_ini):
+    if os.path.exists(launcher_ini) and not os.path.exists(configs_launcher_ini):
         try:
             import shutil
 
-            shutil.copy2(launcher_ini, starter_launcher_ini)
-            print(f"已复制 {launcher_ini} 到 {starter_launcher_ini}")
+            shutil.copy2(launcher_ini, configs_launcher_ini)
+            print(f"已复制 {launcher_ini} 到 {configs_launcher_ini}")
         except Exception as e:
             print(f"复制配置文件失败: {str(e)}")
 
@@ -165,8 +177,15 @@ def main():
     nodes_data_model = NodesDataModel()
 
     window = MainWindow(data_model, nodes_data_model)
-    window.setSplashEnabled(False)
+    # 启动欢迎页：显示图标/标题/加载提示，首屏加载完成后自动揭幕进入主界面
+    window.showSplash(
+        icon=icon_path if os.path.exists(icon_path) else "",
+        title="ComfyUI 启动器",
+        subtitle="正在加载…",
+    )
     window.show()
+    # Qt 启动页显示后关闭 bootloader 启动图，避免两者之间出现空白间隙
+    QTimer.singleShot(200, _close_bootloader_splash)
     # 仅保留一个最小尺寸，宽高均可自由拉伸（不再锁定为固定大小）。
     window.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
 

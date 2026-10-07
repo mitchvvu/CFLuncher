@@ -16,6 +16,8 @@ from PySide6.QtCore import (
     Slot,
 )
 
+from data_model import get_application_dir
+
 DEFAULT_SOURCE_URL = "https://github.com/Comfy-Org/ComfyUI.git"
 
 SOURCE_CONFIGS = [
@@ -86,8 +88,8 @@ class VersionBackend(QObject):
     def __init__(self, data_model, parent=None):
         super().__init__(parent)
         self.data_model = data_model
-        self.versions_file = os.path.join("starter", "git.ini")
-        self.settings_file = os.path.join("starter", "version.ini")
+        self.versions_file = os.path.join("configs", "git.ini")
+        self.settings_file = os.path.join("configs", "version.ini")
 
         self.repo = None
         self.process = None
@@ -213,7 +215,7 @@ class VersionBackend(QObject):
     @Slot()
     def saveSettings(self):
         try:
-            os.makedirs("starter", exist_ok=True)
+            os.makedirs("configs", exist_ok=True)
             config = configparser.ConfigParser()
             if os.path.exists(self.settings_file):
                 config.read(self.settings_file, encoding="utf-8")
@@ -232,7 +234,7 @@ class VersionBackend(QObject):
     # ==================== 路径与仓库状态 ====================
     def get_comfyui_path(self):
         dm = self.data_model
-        app_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        app_dir = get_application_dir()
         if not dm.get_bool("paths", "custom_comfyui_path_enabled"):
             return os.path.join(app_dir, "ComfyUI")
         python_path = dm.get_value("paths", "comfyui_path")

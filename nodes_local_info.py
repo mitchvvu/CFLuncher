@@ -6,10 +6,12 @@ import time
 from pathlib import Path
 import platform
 
+from data_model import get_application_dir
+
 def get_custom_nodes_path():
     """获取custom_nodes文件夹路径"""
     # 从launcher.ini文件获取ComfyUI路径
-    launcher_ini = os.path.join('starter', 'launcher.ini')
+    launcher_ini = os.path.join('configs', 'launcher.ini')
     
     if os.path.exists(launcher_ini):
         config = configparser.ConfigParser()
@@ -31,22 +33,15 @@ def get_custom_nodes_path():
                     print(f"[调试-get_custom_nodes_path] 从launcher.ini获取路径: {custom_nodes_path}")
                     return custom_nodes_path
     
-    # 如果无法从launcher.ini获取路径，使用默认路径
-    # 处理PyInstaller打包后的路径问题
-    if getattr(sys, 'frozen', False):
-        # 如果是打包后的可执行文件，使用应用程序所在目录
-        base_path = os.path.dirname(sys.executable)
-    else:
-        # 如果是脚本运行，使用当前工作目录
-        base_path = os.getcwd()
-            
+    # 如果无法从launcher.ini获取路径，使用默认路径（应用所在目录下的 ComfyUI）
+    base_path = get_application_dir()
     custom_nodes_path = os.path.join(base_path, "ComfyUI", "custom_nodes")
     print(f"[调试-get_custom_nodes_path] 使用默认路径: {custom_nodes_path}")
     return custom_nodes_path
 
 def load_nodes_from_ini():
     """从ini文件加载节点列表"""
-    nodes_list_ini = os.path.join('starter', 'nodes_list.ini')
+    nodes_list_ini = os.path.join('configs', 'nodes_list.ini')
     
     if not os.path.exists(nodes_list_ini):
         print(f"[调试-load_nodes_from_ini] 节点列表文件不存在")
@@ -95,9 +90,9 @@ def load_nodes_from_ini():
 
 def get_proxy_settings():
     """从配置文件获取代理设置"""
-    nodes_ini = os.path.join('starter', 'nodes.ini')
-    git_ini = os.path.join('starter', 'git.ini')
-    launcher_ini = os.path.join('starter', 'launcher.ini')
+    nodes_ini = os.path.join('configs', 'nodes.ini')
+    git_ini = os.path.join('configs', 'git.ini')
+    launcher_ini = os.path.join('configs', 'launcher.ini')
     
     # 默认设置
     proxy_enabled = False
@@ -181,7 +176,7 @@ def update_nodes_version_info(single_node=None):
             nodes_to_update = all_nodes
         
         # 创建或获取git_info部分
-        nodes_list_git_ini = os.path.join('starter', 'nodes_list_git.ini')
+        nodes_list_git_ini = os.path.join('configs', 'nodes_list_git.ini')
         config = configparser.ConfigParser()
         
         # 如果文件存在，先读取现有内容
@@ -291,7 +286,7 @@ def load_version_info_from_ini():
     Returns:
         dict: 版本信息字典，格式为 {node_name: {"version": "...", "date": "...", "has_update": bool}}
     """
-    nodes_list_git_ini = os.path.join('starter', 'nodes_list_git.ini')
+    nodes_list_git_ini = os.path.join('configs', 'nodes_list_git.ini')
     version_info = {}
     
     if not os.path.exists(nodes_list_git_ini):
@@ -358,7 +353,7 @@ def get_node_git_version_and_date(node_path):
         node_name = os.path.basename(node_path)
         
         # 从ini文件加载版本信息
-        nodes_list_git_ini = os.path.join('starter', 'nodes_list_git.ini')
+        nodes_list_git_ini = os.path.join('configs', 'nodes_list_git.ini')
         
         if not os.path.exists(nodes_list_git_ini):
             print(f"[警告-get_node_git_version_and_date] 节点Git信息文件不存在: {nodes_list_git_ini}")

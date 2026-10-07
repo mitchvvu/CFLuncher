@@ -123,7 +123,7 @@ python main_qml.py
 
 也可以直接双击 `0运行GUI.bat`（默认调用 conda 环境 `py310`）。
 
-> 首次运行会自动创建 `starter/` 目录并生成默认配置文件。
+> 首次运行会自动创建 `configs/` 目录并生成默认配置文件。
 
 ---
 
@@ -173,16 +173,16 @@ CF启动管理器fluent版/
 
 ## 配置文件说明
 
-所有配置保存在程序目录下的 `starter/` 文件夹中，均为标准 INI 格式，可直接用文本编辑器查看：
+所有配置保存在程序目录下的 `configs/` 文件夹中，均为标准 INI 格式，可直接用文本编辑器查看：
 
 | 文件 | 用途 |
 | --- | --- |
-| `starter/launcher.ini` | 代理、局域网、Python 路径、高级启动参数等设置 |
-| `starter/nodes.ini` | 节点管理的镜像源、代理等设置 |
-| `starter/version.ini` | 版本管理的更新源、代理等设置 |
-| `starter/git.ini` | Git 相关配置 |
-| `starter/nodes_list.ini` | 自定义节点列表 |
-| `starter/nodes_list_git.ini` | 自定义节点的 Git 信息缓存 |
+| `configs/launcher.ini` | 代理、局域网、Python 路径、高级启动参数等设置 |
+| `configs/nodes.ini` | 节点管理的镜像源、代理等设置 |
+| `configs/version.ini` | 版本管理的更新源、代理等设置 |
+| `configs/git.ini` | Git 相关配置 |
+| `configs/nodes_list.ini` | 自定义节点列表 |
+| `configs/nodes_list_git.ini` | 自定义节点的 Git 信息缓存 |
 
 ---
 

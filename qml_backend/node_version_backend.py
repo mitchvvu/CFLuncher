@@ -85,7 +85,7 @@ class NodeVersionBackend(QObject):
         super().__init__(parent)
         self.node_name = node_name
         self._node_path = node_path
-        self.settings_file = os.path.join("starter", "nodes.ini")
+        self.settings_file = os.path.join("configs", "nodes.ini")
 
         self.repo = None
         self.process = None
@@ -191,7 +191,7 @@ class NodeVersionBackend(QObject):
     @Slot()
     def saveProxySettings(self):
         try:
-            os.makedirs("starter", exist_ok=True)
+            os.makedirs("configs", exist_ok=True)
             config = configparser.ConfigParser()
             if os.path.exists(self.settings_file):
                 config.read(self.settings_file, encoding="utf-8")
@@ -482,7 +482,7 @@ class NodeVersionBackend(QObject):
     def updateNodesListIni(self):
         """把当前节点的更新标记重置为 False。"""
         try:
-            nodes_list_ini = os.path.join("starter", "nodes_list.ini")
+            nodes_list_ini = os.path.join("configs", "nodes_list.ini")
             if not os.path.exists(nodes_list_ini):
                 return
             config = configparser.ConfigParser()

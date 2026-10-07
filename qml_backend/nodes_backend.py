@@ -19,6 +19,7 @@ from PySide6.QtCore import (
 )
 
 import nodes_local_info
+from data_model import get_application_dir
 from qml_backend.node_version_backend import NodeVersionBackend
 
 MIRROR_CONFIGS = [
@@ -147,8 +148,8 @@ class NodesBackend(QObject):
         self.data_model = data_model
         self.nodes_data_model = nodes_data_model
 
-        self.nodes_list_ini = os.path.join("starter", "nodes_list.ini")
-        self.nodes_list_git_ini = os.path.join("starter", "nodes_list_git.ini")
+        self.nodes_list_ini = os.path.join("configs", "nodes_list.ini")
+        self.nodes_list_git_ini = os.path.join("configs", "nodes_list_git.ini")
 
         self._rows = []
         self._proxy_enabled = self.nodes_data_model.get_bool(
@@ -178,7 +179,7 @@ class NodesBackend(QObject):
     # ==================== 基础路径 ====================
     def get_comfyui_path(self):
         dm = self.data_model
-        app_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        app_dir = get_application_dir()
         if not dm.get_bool("paths", "custom_comfyui_path_enabled"):
             return os.path.join(app_dir, "ComfyUI")
         python_path = dm.get_value("paths", "comfyui_path")
@@ -192,9 +193,10 @@ class NodesBackend(QObject):
 
     def get_python_exe_path(self):
         dm = self.data_model
+        default_exe = os.path.join(get_application_dir(), "python_embeded", "python.exe")
         if not dm.get_bool("paths", "custom_comfyui_path_enabled"):
-            return ".\\python_embeded\\python.exe"
-        return dm.get_value("paths", "comfyui_path") or ".\\python_embeded\\python.exe"
+            return default_exe
+        return dm.get_value("paths", "comfyui_path") or default_exe
 
     # ==================== 属性 ====================
     def _get_proxy_enabled(self):

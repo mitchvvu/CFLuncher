@@ -1,13 +1,22 @@
 import json
 import os
+import sys
 import configparser
 from pathlib import Path
 
+
+def get_application_dir():
+    """返回应用程序所在目录：打包后为 exe 所在目录，源码运行为项目根目录。"""
+    if getattr(sys, "frozen", False):
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 class DataModel:
     def __init__(self):
-        # 确保starter目录存在
-        os.makedirs('starter', exist_ok=True)
-        self.config_file = os.path.join('starter', 'launcher.ini')
+        # 确保configs目录存在
+        os.makedirs('configs', exist_ok=True)
+        self.config_file = os.path.join('configs', 'launcher.ini')
         self.config = configparser.ConfigParser()
         
         # 默认设置
@@ -98,7 +107,7 @@ class DataModel:
                 return Path(custom_path).exists()
         
         # 默认路径检查
-        python_exe = Path('python_embeded/python.exe')
+        python_exe = Path(get_application_dir()) / 'python_embeded' / 'python.exe'
         return python_exe.exists()
         
     def get_comfyui_path(self):
@@ -111,9 +120,9 @@ class DataModel:
 class NodesDataModel:
     """节点面板数据模型，用于处理节点面板的设置"""
     def __init__(self):
-        # 确保starter目录存在
-        os.makedirs('starter', exist_ok=True)
-        self.config_file = os.path.join('starter', 'nodes.ini')
+        # 确保configs目录存在
+        os.makedirs('configs', exist_ok=True)
+        self.config_file = os.path.join('configs', 'nodes.ini')
         self.config = configparser.ConfigParser()
         
         # 默认设置
