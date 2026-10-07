@@ -177,17 +177,17 @@ def main():
     nodes_data_model = NodesDataModel()
 
     window = MainWindow(data_model, nodes_data_model)
-    # 启动欢迎页：显示图标/标题/加载提示，首屏加载完成后自动揭幕进入主界面
-    window.showSplash(
-        icon=icon_path if os.path.exists(icon_path) else "",
-        title="ComfyUI 启动器",
-        subtitle="正在加载…",
-    )
+    # 关闭 PrismQML 内置欢迎页（FastSplash），只保留 PyInstaller bootloader 启动图
+    window.setSplashEnabled(False)
+    # 首屏页面加载完成（或失败）后再关闭 bootloader 启动图：启动图本身置顶，
+    # 会一直盖住主窗口，直到首屏内容真正就绪，避免中间露出与程序等大的空白窗口。
+    window.startup_page.page_ready.connect(_close_bootloader_splash)
+    window.startup_page.page_failed.connect(lambda _msg: _close_bootloader_splash())
     window.show()
-    # Qt 启动页显示后关闭 bootloader 启动图，避免两者之间出现空白间隙
-    QTimer.singleShot(200, _close_bootloader_splash)
     # 仅保留一个最小尺寸，宽高均可自由拉伸（不再锁定为固定大小）。
     window.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
+    # 兜底：若首屏加载异常迟迟没有结果，最迟 60 秒后关闭启动图，防止遮罩卡死。
+    QTimer.singleShot(60000, _close_bootloader_splash)
 
     sys.exit(app.exec())
 

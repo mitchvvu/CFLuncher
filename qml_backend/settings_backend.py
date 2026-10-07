@@ -35,7 +35,6 @@ class SettingsBackend(QObject):
     notifySuccess = Signal(str, str)
     notifyError = Signal(str, str)
 
-    proxyEnabled = _bool_prop("proxy_enabled", valueChanged)
     proxyType = _str_prop("proxy_type", valueChanged)
     proxyHost = _str_prop("proxy_host", valueChanged)
     proxyPort = _str_prop("proxy_port", valueChanged)
@@ -167,7 +166,6 @@ class SettingsBackend(QObject):
         dm = self.data_model
         self.data_model.set_value("proxy", "only_for_startup", True)
         self._values = {
-            "proxy_enabled": dm.get_bool("proxy", "enabled"),
             "proxy_type": dm.get_value("proxy", "proxy_type", "system"),
             "proxy_host": dm.get_value("proxy", "http_proxy", "127.0.0.1"),
             "proxy_port": dm.get_value("proxy", "port", "7897"),
@@ -207,7 +205,6 @@ class SettingsBackend(QObject):
         dm = self.data_model
         v = self._values
 
-        dm.set_value("proxy", "enabled", v.get("proxy_enabled", False))
         dm.set_value("proxy", "only_for_startup", True)
         dm.set_value("proxy", "proxy_type", v.get("proxy_type", "system"))
         dm.set_value("proxy", "http_proxy", v.get("proxy_host", ""))

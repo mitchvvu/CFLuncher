@@ -93,7 +93,7 @@ gitpython>=3.1.30
 
 ### 1. 下载发布版（推荐）
 
-1. 前往 Releases 下载最新的 `ComfyUIStarterV0.7.0.exe`
+1. 前往 Releases 下载最新的 `ComfyUILauncherV0.7.0.exe`
 2. 将 exe 放到 **ComfyUI 便携版根目录**（即与 `python_embeded` 文件夹同级）
 3. 双击运行即可
 
@@ -104,7 +104,7 @@ ComfyUI_windows_portable/
 ├─ python_embeded/
 ├─ ComfyUI/
 ├─ update/
-└─ ComfyUIStarterV0.7.0.exe   ← 启动器放在这里
+└─ ComfyUILauncherV0.7.0.exe   ← 启动器放在这里
 ```
 
 ### 2. 从源码运行
@@ -132,12 +132,12 @@ python main_qml.py
 双击 `1编译程序.bat`，或手动执行：
 
 ```bash
-pyinstaller --name="ComfyUIStarterV0.7.0" --noconsole --onefile --clean ^
+pyinstaller --name="ComfyUILauncherV0.7.0" --noconsole --onefile --clean ^
   --collect-all prismqml --add-data="qml;qml" --add-data="icon.ico;." ^
   --icon="icon.ico" main_qml.py
 ```
 
-打包产物位于 `dist/ComfyUIStarterV0.7.0.exe`。
+打包产物位于 `dist/ComfyUILauncherV0.7.0.exe`。
 
 ---
 

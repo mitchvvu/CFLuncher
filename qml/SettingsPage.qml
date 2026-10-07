@@ -84,18 +84,10 @@ Item {
                         text: "代理设置"
                     }
 
-                    SwitchRow {
-                        text: "启用代理（仅对启动面板生效）"
-                        checked: backend.proxyEnabled
-                        onToggled: (checked) => {
-                            backend.proxyEnabled = checked
-                        }
-                    }
-
+                    // 代理开关已移至「启动」页面，此处仅负责配置代理参数
                     Column {
                         width: parent.width
                         spacing: 12
-                        visible: backend.proxyEnabled
 
                         Row {
                             width: parent.width

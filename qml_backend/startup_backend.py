@@ -176,6 +176,7 @@ class StartupBackend(QObject):
     commandPreviewChanged = Signal()
     startEnabledChanged = Signal()
     pythonMissingChanged = Signal()
+    proxyEnabledChanged = Signal()
 
     notifySuccess = Signal(str, str)  # title, content
     notifyError = Signal(str, str)
@@ -215,6 +216,26 @@ class StartupBackend(QObject):
 
     pythonMissingMessage = Property(
         str, _get_python_missing_message, notify=pythonMissingChanged
+    )
+
+    def _get_proxy_enabled(self):
+        return self.data_model.get_bool("proxy", "enabled")
+
+    def _set_proxy_enabled(self, enabled):
+        enabled = bool(enabled)
+        if self.data_model.get_bool("proxy", "enabled") == enabled:
+            return
+        self.data_model.set_value("proxy", "enabled", enabled)
+        self.data_model.set_value("proxy", "only_for_startup", True)
+        self.data_model.save_config()
+        # 重建进程管理器，使代理开关立即作用于启动命令
+        self.process_manager = self._create_process_manager()
+        self._refresh_python_state()
+        self.proxyEnabledChanged.emit()
+        self.commandPreviewChanged.emit()
+
+    proxyEnabled = Property(
+        bool, _get_proxy_enabled, _set_proxy_enabled, notify=proxyEnabledChanged
     )
 
     def _get_log_model(self):

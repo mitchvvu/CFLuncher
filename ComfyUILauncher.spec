@@ -117,7 +117,7 @@ exe = EXE(
     splash,
     splash.binaries,
     [],
-    name='ComfyUIStarterV0.7.0',
+    name='ComfyUILauncherV0.7.0',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

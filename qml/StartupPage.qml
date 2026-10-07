@@ -65,7 +65,7 @@ Item {
 
                     Button {
                         id: startButton
-                        width: Math.round(controlRow.width * 0.55)
+                        width: Math.round(controlRow.width * 0.5)
                         height: 50
                         style: Enums.button.style_primary
                         icon: "Power"
@@ -74,8 +74,22 @@ Item {
                         onClicked: backend.toggleComfyUI()
                     }
 
+                    // 代理开关（原设置页开关，移到启动页；运行中不可切换）
                     Button {
-                        width: Math.round((controlRow.width - startButton.width - 30) / 3)
+                        width: Math.round((controlRow.width - startButton.width - 40) / 4)
+                        height: 50
+                        feature: Enums.button.feature_toggle
+                        icon: "Earth"
+                        text: "代理"
+                        checked: backend.proxyEnabled
+                        enabled: !backend.isRunning
+                        onToggled: (checked) => {
+                            backend.proxyEnabled = checked
+                        }
+                    }
+
+                    Button {
+                        width: Math.round((controlRow.width - startButton.width - 40) / 4)
                         height: 50
                         text: "重启"
                         enabled: backend.isRunning
@@ -83,7 +97,7 @@ Item {
                     }
 
                     Button {
-                        width: Math.round((controlRow.width - startButton.width - 30) / 3)
+                        width: Math.round((controlRow.width - startButton.width - 40) / 4)
                         height: 50
                         text: "停止"
                         enabled: backend.isRunning
@@ -91,7 +105,7 @@ Item {
                     }
 
                     Button {
-                        width: Math.round((controlRow.width - startButton.width - 30) / 3)
+                        width: Math.round((controlRow.width - startButton.width - 40) / 4)
                         height: 50
                         text: "强行停止"
                         onClicked: forceStopDialog.open()
