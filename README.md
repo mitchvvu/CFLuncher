@@ -82,7 +82,6 @@ Python 依赖见 [requirements.txt](requirements.txt)：
 
 ```
 PySide6>=6.4.0
-PySide6-Fluent-Widgets==1.8.3   # 仅旧版 Fluent 界面（main.py）需要
 prismqml>=0.4.2
 pyinstaller>=5.6.2
 gitpython>=3.1.30
@@ -146,8 +145,7 @@ pyinstaller --name="ComfyUIStarterV0.7.0" --noconsole --onefile --clean ^
 
 ```
 CF启动管理器fluent版/
-├─ main_qml.py                 # 新版 QML 界面入口
-├─ main.py                     # 旧版 Fluent Widgets 界面入口
+├─ main_qml.py                 # QML 界面入口
 ├─ qml/                        # QML 界面（一个页面一个文件）
 │  ├─ StartupPage.qml          #   启动页
 │  ├─ VersionPage.qml          #   版本管理页
@@ -164,9 +162,6 @@ CF启动管理器fluent版/
 ├─ data_model.py               # 配置读取与持久化（INI）
 ├─ process_manager.py          # ComfyUI 进程的启动/停止/日志
 ├─ nodes_local_info.py         # 本地节点信息读取
-├─ nodes_update_single.py      # 单节点版本与更新逻辑
-├─ startup_panel.py …          # 旧版 Fluent 界面（对应 main.py）
-├─ style.qss                   # 旧版界面样式表
 ├─ icon.ico / icon.svg         # 应用图标
 ├─ requirements.txt
 ├─ 0运行GUI.bat                # 一键运行（源码）

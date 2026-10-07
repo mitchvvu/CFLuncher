@@ -415,7 +415,6 @@ class ComfyUIProcessManager(QObject):
         stdout = bytes(data).decode('utf-8', errors='ignore')
         
         # 确保进度条数据不被截断，例如 [00:19<00:00, 77.05it/s]
-        # 这里不做特殊处理，因为已在 startup_panel.py 的 _process_ansi_colors 方法中处理了 HTML 转义
         self.log_signal.emit(stdout)
         
         # 检查是否启用了重启命令接管

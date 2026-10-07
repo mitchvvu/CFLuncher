@@ -344,62 +344,6 @@ def load_version_info_from_ini():
     
     return version_info
 
-def apply_version_info_to_ui(nodes_list_widget, version_info):
-    """将版本信息应用到UI
-    
-    Args:
-        nodes_list_widget: 节点列表控件
-        version_info: 版本信息字典
-    """
-    from PySide6.QtCore import Qt
-    from PySide6.QtWidgets import QLabel
-    from qfluentwidgets import BodyLabel, InfoBar, InfoBarPosition
-    
-    update_count = 0
-    
-    # 应用版本信息到UI
-    for i in range(nodes_list_widget.count()):
-        item = nodes_list_widget.item(i)
-        if item:
-            data = item.data(Qt.UserRole)
-            if data and isinstance(data, dict):
-                display_name = data.get("display_name", "")
-                
-                # 检查该节点是否有版本信息
-                if display_name in version_info:
-                    node_info = version_info[display_name]
-                    
-                    # 检查该节点是否有更新
-                    if node_info.get('has_update', False):
-                        update_count += 1
-                        
-                        # 获取节点控件
-                        widget = nodes_list_widget.itemWidget(item)
-                        if widget:
-                            # 查找名称标签
-                            for child in widget.findChildren(BodyLabel):
-                                if hasattr(child, 'property') and child.property("original_text"):
-                                    # 设置为feb201颜色
-                                    child.setStyleSheet("color: #feb201; font-weight: bold;")
-                                    # 强制应用样式
-                                    child.style().unpolish(child)
-                                    child.style().polish(child)
-                                    child.update()  # 强制更新显示
-                                    break
-    
-    # 只有在有更新时才显示信息
-    if update_count > 0:
-        parent = nodes_list_widget.parent()
-        InfoBar.success(
-            title="更新检查完成",
-            content=f"发现 {update_count} 个节点有可用更新",
-            orient=Qt.Horizontal,
-            isClosable=True,
-            position=InfoBarPosition.TOP,
-            duration=3000,
-            parent=parent
-        )
-
 def get_node_git_version_and_date(node_path):
     """获取节点的Git版本和日期信息
     
