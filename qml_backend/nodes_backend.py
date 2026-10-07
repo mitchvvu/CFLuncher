@@ -17,6 +17,7 @@ from PySide6.QtCore import (
     Signal,
     Slot,
 )
+from PySide6.QtGui import QGuiApplication
 
 import nodes_local_info
 from data_model import get_application_dir
@@ -1141,6 +1142,18 @@ class NodesBackend(QObject):
             self._open_path(row["nodePath"])
         else:
             self.notifyError.emit("错误", f"文件夹不存在：{row['nodePath']}")
+
+    @Slot(int)
+    def copyRequirementsPathForNode(self, index):
+        row = self.node_model.row_at(index)
+        if row is None:
+            return
+        req_path = os.path.join(row["nodePath"], "requirements.txt")
+        if not os.path.exists(req_path):
+            self.notifyError.emit("错误", f"未找到依赖文件：{req_path}")
+            return
+        QGuiApplication.clipboard().setText(req_path)
+        self.notifySuccess.emit("复制成功", "依赖路径已复制到剪贴板")
 
     @Slot(int)
     def openReqFileForNode(self, index):

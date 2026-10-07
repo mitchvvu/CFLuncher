@@ -594,18 +594,27 @@ Item {
                                         }
                                     }
 
-                                    Button {
-                                        id: installReqButton
+                                    Item {
+                                        id: copyReqPathItem
+                                        width: copyReqPathButton.implicitWidth
                                         height: 30
-                                        icon: "Document"
-                                        text: "安装依赖"
                                         visible: hasRequirements
-                                        enabled: isEnabled
-                                        onClicked: backend.installRequirementsForNode(index)
 
+                                        Button {
+                                            id: copyReqPathButton
+                                            height: parent.height
+                                            icon: "Copy"
+                                            text: "复制依赖路径"
+                                            enabled: isEnabled
+                                            onClicked: backend.copyRequirementsPathForNode(index)
+                                        }
+
+                                        // 右键打开依赖文件。鼠标区域必须放在按钮外侧，
+                                        // 否则会被 Button 当作自定义内容而隐藏按钮的图标与文字。
                                         MouseArea {
                                             anchors.fill: parent
                                             acceptedButtons: Qt.RightButton
+                                            enabled: isEnabled
                                             onClicked: backend.openReqFileForNode(index)
                                         }
                                     }
